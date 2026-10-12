@@ -14,15 +14,13 @@ public final class RunResult {
 	private final String errorOutput;
 	// 프로세스 종료 코드, 실행 전 또는 시간 초과 결과는 -1
 	private final int exitCode;
-	// 이전 자동 Compile+Run용 시간, 현재 Run에서는 사용X
-	private final long compileDurationMillis;
 	// 실행 소요 시간(ms), 실행하지 않은 결과는 -1
 	private final long runDurationMillis;
 
 	// 모든 결과 필드 초기화, 아래 정적 메서드로 결과 생성
 	private RunResult(boolean executed, boolean timedOut, String message,
 			String standardOutput, String errorOutput, int exitCode,
-			long compileDurationMillis, long runDurationMillis)
+			long runDurationMillis)
 	{
 		this.executed = executed;
 		this.timedOut = timedOut;
@@ -30,28 +28,22 @@ public final class RunResult {
 		this.standardOutput = standardOutput;
 		this.errorOutput = errorOutput;
 		this.exitCode = exitCode;
-		this.compileDurationMillis = compileDurationMillis;
 		this.runDurationMillis = runDurationMillis;
 	}
 
 	// 프로세스 종료 결과 생성 : 출력 + 실제 Exit Code + 소요 시간
 	public static RunResult executed(String standardOutput, String errorOutput, int exitCode, long runDurationMillis) {
-		return new RunResult(true, false, "", standardOutput, errorOutput, exitCode, -1, runDurationMillis);
+		return new RunResult(true, false, "", standardOutput, errorOutput, exitCode, runDurationMillis);
 	}
 
 	// 시간 초과 결과 생성 : 실행 여부 true, 시간 초과 true
 	public static RunResult timedOut(String standardOutput, String errorOutput, long runDurationMillis) {
-		return new RunResult(true, true, "Error: execution time exceeded (5 seconds)", standardOutput, errorOutput, -1, -1, runDurationMillis);
+		return new RunResult(true, true, "Error: execution time exceeded (5 seconds)", standardOutput, errorOutput, -1, runDurationMillis);
 	}
 
 	// 실행 거부 / 실행 실패 결과 생성 : 안내 메시지 저장
 	public static RunResult notExecuted(String message) {
-		return new RunResult(false, false, message, "", "", -1, -1, -1);
-	}
-
-	// 기존 결과를 복사해 Compile 시간을 붙임, 현재 호출하는 곳은 없음
-	public RunResult withCompileDuration(long durationMillis) {
-		return new RunResult(executed, timedOut, message, standardOutput, errorOutput, exitCode, durationMillis, runDurationMillis);
+		return new RunResult(false, false, message, "", "", -1, -1);
 	}
 
 	// Getter들 : ConsoleUI와 Controller에서 실행 결과 확인
@@ -61,6 +53,5 @@ public final class RunResult {
 	public String getStandardOutput() { return standardOutput; }
 	public String getErrorOutput() { return errorOutput; }
 	public int getExitCode() { return exitCode; }
-	public long getCompileDurationMillis() { return compileDurationMillis; }
 	public long getRunDurationMillis() { return runDurationMillis; }
 }

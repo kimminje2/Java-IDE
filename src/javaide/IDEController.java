@@ -126,14 +126,6 @@ public class IDEController {
 		return result;
 	}
 
-	// 현재 Upload된 파일의 소스 미리보기
-	public String getSourcePreview() {
-		String fileName = state.getCurrentFileName();
-		if (fileName == null) return "Error: no file uploaded";
-		// 파일명을 받는 메서드에 실제 조회 요청
-		return getSourcePreview(fileName);
-	}
-
 	// 선택한 파일의 소스 미리보기, 현재 Compile / Run 대상 변경X
 	public String getSourcePreview(String fileName) {
 		// .java 확장자 검사
